@@ -121,7 +121,7 @@
                 <!-- local/remote videos container -->
                 <div id="videos-container"></div>
             </section>
-            <script src="https://www.webrtc-experiment.com/firebase.js"></script>
+        
             <script>
                 // Muaz Khan     - https://github.com/muaz-khan
                 // MIT License   - https://www.webrtc-experiment.com/licence/
@@ -129,18 +129,31 @@
 
                 var config = {
                     openSocket: function (config) {
-                        var channel = config.channel || location.hash.replace('#', '') || 'webrtc-oneway-broadcasting';
-                        var socket = new Firebase('https://mycrofone.firebaseIO.com/' + channel);
-                        socket.channel = channel;
-                        socket.on('child_added', function (data) {
-                            config.onmessage(data.val());
+                        var SIGNALING_SERVER = 'https://www.webrtc-experiment.com:8553/',
+                            defaultChannel = location.hash.substr(1) || 'webrtc-oneway-broadcasting';
+
+                        var channel = config.channel || defaultChannel;
+                        var sender = Math.round(Math.random() * 999999999) + 999999999;
+
+                        io.connect(SIGNALING_SERVER).emit('new-channel', {
+                            channel: channel,
+                            sender: sender
                         });
-                        socket.send = function (data) {
-                            this.push(data);
-                        }
-                        config.onopen && setTimeout(config.onopen, 1);
-                        socket.onDisconnect().remove();
-                        return socket;
+
+                        var socket = io.connect(SIGNALING_SERVER + channel);
+                        socket.channel = channel;
+                        socket.on('connect', function() {
+                            if (config.callback) config.callback(socket);
+                        });
+
+                        socket.send = function(message) {
+                            socket.emit('message', {
+                                sender: sender,
+                                data: message
+                            });
+                        };
+
+                        socket.on('message', config.onmessage);
                     },
                     onRemoteStream: function (htmlElement) {
                         htmlElement.setAttribute('controls', true);
@@ -179,7 +192,6 @@
                     }
                 };
 
-
                 function setupNewBroadcastButtonClickHandler() {
                     document.getElementById('broadcast-name').disabled=true;
                     document.getElementById('setup-new-broadcast').disabled=true;
@@ -197,12 +209,28 @@
                 }
 
                 function captureUserMedia(callback) {
-                    var constraints = {
+                    var constraints = null;
+                    window.option = broadcastingOption ? broadcastingOption.value : '';
+                    if (option === 'Only Audio') {
+                        constraints = {
                             audio: true,
                             video: false
                         };
+                    }
+                    if (option === 'Screen') {        
+                        var video_constraints = {
+                            mandatory: {
+                                chromeMediaSource: 'screen'
+                            },
+                            optional: []
+                        };
+                        constraints = {
+                            audio: false,
+                            video: video_constraints
+                        };
+                    }
 
-                    var htmlElement = document.createElement('audio');
+                    var htmlElement = document.createElement(option === 'Only Audio' ? 'audio' : 'video');
                     htmlElement.setAttribute('autoplay', true);
                     htmlElement.setAttribute('controls', true);
                     videosContainer.insertBefore(htmlElement, videosContainer.firstChild);
@@ -217,7 +245,12 @@
                             rotateInCircle(htmlElement);
                         },
                         onerror: function () {
-                            alert('unable to get access to your microphone');
+                            if (option === 'Only Audio') alert('unable to get access to your microphone');
+                            else if(option === 'Screen') {
+                                if(location.protocol === 'http:') alert('Please test this WebRTC experiment on HTTPS.');
+                                else alert('Screen capturing is either denied or not supported. Are you enabled flag: "Enable screen capture support in getUserMedia"?');
+                            }
+                            else alert('unable to get access to your webcam');
                         }
                     };
                     if (constraints) mediaConfig.constraints = constraints;
