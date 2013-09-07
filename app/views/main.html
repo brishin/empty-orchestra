@@ -1,9 +1,16 @@
 <div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
+  <button ng-click="createRoom()">
+    Create Room
+  </button>
+  <form ng-submit="joinRoom()">
+    <input type="text"
+           ng-model="joinRoomId"
+           placeholder="Short Code"
+           autofocus
+           required />
+    <button>Join Room</button>
+  </form>
   <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
+    <li ng-repeat="room in rooms">{{room}}</li>
   </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
 </div>

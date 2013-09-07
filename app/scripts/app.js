@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('emptyOrchestraApp', [])
+angular.module('emptyOrchestraApp', ['firebase'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
