@@ -8,11 +8,11 @@ angular.module('emptyOrchestraApp', ['firebase', 'ngProgress'])
         controller: 'MainCtrl'
       })
       .when('/presenter/:sessionID', {
-        templateUrl: 'views/presenterSession.html',
+        templateUrl: 'views/presenter-session.html',
         controller: 'PresenterCtrl'
       })
       .when('/observer/:sessionID', {
-        templateUrl: 'views/observerSession.html',
+        templateUrl: 'views/observer-session.html',
         controller: 'ObserverCtrl'
       })
       .otherwise({

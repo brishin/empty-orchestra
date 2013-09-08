@@ -7,7 +7,8 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar)
   $scope.sessionID = $routeParams.sessionID;
 });
                
-app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar) {
+app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, observerSessionFactory) {
   progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
+  observerSessionFactory.observe();
 });

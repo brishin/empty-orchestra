@@ -11,7 +11,14 @@ body {
 .top-bar {
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 0.2em;
-  margin-bottom: 1em; 
+  margin-bottom: 1.8em; 
+}
+
+.promotion {
+  text-align: center;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 1.8em;
+  font-weight: 300;
 }
 
 .role-bar {
@@ -50,4 +57,21 @@ body {
 
 .form-area {
   text-align: center; 
+}
+
+.observer-session {
+  text-align: center; 
+}
+
+*.unselectable {
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
 }

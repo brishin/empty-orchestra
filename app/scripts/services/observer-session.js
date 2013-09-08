@@ -2,11 +2,12 @@
 // MIT License   - https://www.webrtc-experiment.com/licence/
 // Documentation - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/webrtc-broadcasting
 
-//angular.module('emptyOrchestraApp')
-//.factory('observerSession', function() {
+angular.module('emptyOrchestraApp')
+  .factory('observerSessionFactory', function() {
     var config = {
       openSocket: function(config) {
-          var channel = config.channel || location.hash.replace('#', '') || 'webrtc-oneway-broadcasting';
+          // var channel = config.channel || location.hash.replace('#', '') || 'webrtc-oneway-broadcasting';
+          var channel = config.channel || '/presenter/123' || 'webrtc-oneway-broadcasting';
           var socket = new Firebase('https://mycrofone.firebaseIO.com/' + channel);
           socket.channel = channel;
           socket.on('child_added', function(data) {
@@ -51,17 +52,15 @@
   };
   
   
-  function setupNewBroadcastButtonClickHandler() {
-      document.getElementById('broadcast-name').disabled = true;
-      document.getElementById('setup-new-broadcast').disabled = true;
-  
+  var observe = function () {
+      console.log('Now observing');
       captureUserMedia(function() {
           broadcastUI.createRoom({
               roomName: (document.getElementById('broadcast-name') || {}).value || 'Anonymous',
               isAudio: true
           });
       });
-  }
+  };
   
   function captureUserMedia(callback) {
       var constraints = {
@@ -85,5 +84,7 @@
   
   var broadcastUI = broadcast(config);
   
-  if (setupNewBroadcast) setupNewBroadcast.onclick = setupNewBroadcastButtonClickHandler;
-//});
+  return {
+      observe: observe
+  };
+});
