@@ -7,15 +7,15 @@ angular.module('emptyOrchestraApp')
       "name": ""
     };
     $scope.viewMode = 'observer';
-    var fireBaseSessions = 
+    var fireBaseSessions =
       new Firebase("https://empty-orchestra.firebaseio.com/sessions");
-    
+
     var startProgressBar = function () {
       progressbar.color('#B5FDFF');
       progressbar.height('5px');
       progressbar.start();
     };
-    
+
     $scope.incrementCurrent = function() {
       var d = $q.defer();
       fireBaseSessions.child('current').once('value', function(snapshot) {
@@ -43,7 +43,7 @@ angular.module('emptyOrchestraApp')
         fireBaseSessions.child(current).set($scope.newSession, function(error) {
           console.log("Got response");
           if (error) alert("Failed to create session.");
-          else {            
+          else {
             $location.path('/presenter/' + current);
             $scope.$apply();
           }
@@ -54,7 +54,7 @@ angular.module('emptyOrchestraApp')
         console.log(update);
       });
     };
-    
+
     $scope.joinSession = function() {
       startProgressBar();
       console.log($scope.joinSessionID);

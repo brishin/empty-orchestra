@@ -1,4 +1,4 @@
-﻿/* MIT License: https://webrtc-experiment.appspot.com/licence/ */
+/* MIT License: https://webrtc-experiment.appspot.com/licence/ */
 
 var broadcast = function (config) {
     var self = {
@@ -221,10 +221,10 @@ var broadcast = function (config) {
                 });
 
             publicSocket.send({
-                    participant: true,
-                    userToken: self.userToken,
-                    joinUser: _config.joinUser
-                });
+                participant: true,
+                userToken: self.userToken,
+                joinUser: _config.joinUser
+            });
         }
     };
 };

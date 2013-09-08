@@ -15,7 +15,25 @@ angular.module('emptyOrchestraApp', ['firebase', 'ngProgress'])
         templateUrl: 'views/observer-session.html',
         controller: 'ObserverCtrl'
       })
+      .when('/notSupported', {
+        templateUrl: 'views/not-supported.html'
+      })
       .otherwise({
         redirectTo: '/'
       });
+  })
+  .run(function(routeWatcher, $location){
+    var rtcSupported = Boolean(
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia
+    );
+    rtcSupported = false;
+    routeWatcher.watch(function(event, current, previous){
+      if (!rtcSupported) {
+        console.log('Browser not supported.');
+        $location.path('/notSupported');
+      }
+    });
   });

@@ -14,6 +14,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 1.8em;
 }
 
+.not-supported {
+  text-align: center;
+}
+
+.not-supported .pusheen {
+  background-image: url(https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/s240x240/851585_185128351661431_446256352_n.png); background-size: 236px 244px; cursor: pointer; height: 122px; width: 118px; background-position: 0px 0px;
+  margin: 2em auto;
+}
+
 @media (max-width: 768px) {
   .top-bar {
     text-align: center;
