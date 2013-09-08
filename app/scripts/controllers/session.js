@@ -10,6 +10,7 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
   $scope.sessionID = $routeParams.sessionID;
   var FirebaseSession = new Firebase('https://empty-orchestra.firebaseio.com/sessions/').child($scope.sessionID);
   $scope.rooms = [];
+  $scope.roomsLeft = {};
   angularFire(FirebaseSession.child('queue'), $scope, "rooms");
   
   routeWatcher.watch(function() {
@@ -26,6 +27,11 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
         roomToken: $scope.rooms[0].roomToken,
         joinUser: $scope.rooms[0].broadcaster
       });
+    }
+
+    var oldRoom = oldValue[0];
+    if (oldRoom) {
+      $scope.roomsLeft[oldRoom.roomToken] = true;
     }
   });
   
@@ -64,9 +70,21 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
         socket.channel = channel;
         socket.on('child_added', function(data) {
             console.log('Child added to socket');
+            var room = data.val();
+            console.log(room);
+            if (room.roomToken in $scope.roomsLeft) {
+              console.log('This guys left. Ignoring');
+              return;
+            }
             conf.onmessage(data.val());
         });
         socket.send = function(data) {
+            var room = data;
+            console.log(room);
+            if (room.roomToken in $scope.roomsLeft) {
+              console.log('This guys left. Ignoring');
+              return;
+            }
             this.push(data);
         }
         conf.onopen && setTimeout(conf.onopen, 1);
@@ -209,7 +227,11 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, 
     var index = $scope.queue.indexOf($scope.room);
     $scope.queue.shift();
     $scope.prompt = true;
+    console.log(broadcastUI);
     broadcastUI.stopBroadcasting();
+    console.log('Trying to close');
+    config.onclose()
+    console.log(config);
   }
 
     var broadcastUI = broadcast(config);

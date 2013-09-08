@@ -95,6 +95,7 @@ var broadcast = function (config) {
             }
 
             peer = RTCPeerConnection(peerConfig);
+            peer.peer.on
         }
 
         function onRemoteStreamStartsFlowing() {
@@ -109,6 +110,7 @@ var broadcast = function (config) {
 
             /* closing subsocket here on the offerer side */
             if (_config.closeSocket) socket = null;
+            if (!self.broadcasting) socket = null;
         }
 
         function sendsdp(sdp) {
@@ -188,7 +190,9 @@ var broadcast = function (config) {
             isAudio: self.isAudio
         };
         defaultSocket && defaultSocket.send(roomData);
-        setTimeout(startBroadcasting, 3000);
+        if (self.broadcasting) {       
+            setTimeout(startBroadcasting, 3000);
+        }
         return roomData;
     }
 
@@ -205,6 +209,7 @@ var broadcast = function (config) {
             self.roomName = _config.roomName || 'Anonymous';
             self.isAudio = _config.isAudio;
             self.roomToken = uniqueToken();
+            self.broadcasting = true;
 
             isbroadcaster = true;
             isGetNewRoom = false;
@@ -227,6 +232,19 @@ var broadcast = function (config) {
         },
         getAudioPlayer: function () {
             return self.htmlElement;
+        },
+        stopBroadcasting: function () {
+            self.broadcasting = false;
+            isbroadcaster = false;
+            if (self.htmlElement) {
+                self.htmlElement.muted = true;
+            }
+            openSubSocket({
+                    isofferer: false,
+                    channel: self.userToken,
+                    closeSocket: true
+                });
         }
     };
 };
+            window.broadcast = broadcast;
