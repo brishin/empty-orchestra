@@ -18,6 +18,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   .top-bar {
     text-align: center;
   }
+
+  .main-view .form-group {
+    margin: 0 10%;
+  }
 }
 
 .promotion {
@@ -107,6 +111,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-top: 1em;
   list-style-position: inside;
   font-size: 18px;
+}
+
+.observer-session ol {
+  -webkit-padding-start: 0px;
 }
 
 *.unselectable {

@@ -67,26 +67,19 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
     onRemoteStream: function(htmlElement) {},
     onRoomFound: function(room) {
       console.log(room);
-      broadcastUI.joinRoom({
-            roomToken: room.broadcaster,
-            joinUser: room.broadcaster
-          });        
-      /*if (room.broadcaster in roomsPresent) return;  
-      $scope.rooms.push({
-        'name': room.roomName,
-        'initAndStart': function (callback) {
-          if (room.broadcaster in roomsPresent) return;
-          console.log(roomsPresent);
-          console.log(room.broadcaster);
-          broadcastUI.joinRoom({
-            roomToken: room.broadcaster,
-            joinUser: room.broadcaster
-          });
-          if (callback) callback(room);
-        }
-      });
-      
-      $scope.$apply();*/
+      var roomInQueue = $scope.rooms[0];
+      console.log(roomInQueue);
+      if (roomInQueue && roomInQueue.uid == room.roomToken) {
+        var player = broadcastUI.getAudioPlayer()
+        if (player) player.muted = false;
+        broadcastUI.joinRoom({
+              roomToken: room.broadcaster,
+              joinUser: room.broadcaster
+            });
+      } else {
+        var player = broadcastUI.getAudioPlayer()
+        if (player) player.muted = true;
+      }
     },
     onNewParticipant: function(numberOfViewers) {
         document.title = 'Viewers: ' + numberOfViewers;
