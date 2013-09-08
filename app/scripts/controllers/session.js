@@ -5,7 +5,11 @@ var app = angular.module('emptyOrchestraApp');
 app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar, routeWatcher) {
   progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
-  routeWatcher.watch();
+  routeWatcher.watch(function() {
+    if (broadcastUI.getAudioPlayer())
+      angular.element(broadcastUI.getAudioPlayer()).remove();
+    broadcastUI.getAudioPlayer().muted = true;
+  });
   
   $scope.listening = false;
   $scope.rooms = [];
@@ -30,24 +34,25 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
   };
   
   $scope.nextRoom = function () {
+    $scope.pauseListening();
     var oldRoom = $scope.rooms.shift();
-    // delete $scope.presentRooms[oldRoom.broadcaster];
+    $scope.startListening();
   };
   
   var config = {
-    openSocket: function(config) {
-        var channel = config.channel || $scope.sessionID || 'webrtc-oneway-broadcasting';
-        console.log(config.channel);
+    openSocket: function(conf) {
+        var channel = conf.channel || $scope.sessionID || 'webrtc-oneway-broadcasting';
+        console.log(conf.channel);
         console.log(channel);
-        var socket = new Firebase('https://empty-orchestra.firebaseio.com/' + channel);
+        var socket = new Firebase('https://empty-orchestra.firebaseio.com/channels/' + channel);
         socket.channel = channel;
         socket.on('child_added', function(data) {
-            config.onmessage(data.val());
+            conf.onmessage(data.val());
         });
         socket.send = function(data) {
             this.push(data);
         }
-        config.onopen && setTimeout(config.onopen, 1);
+        conf.onopen && setTimeout(conf.onopen, 1);
         socket.onDisconnect().remove();
         return socket;
     },
@@ -98,15 +103,35 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
   var broadcastUI = broadcast(config);
 });
 
-app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar) {
+function uniqueToken() {
+  var s4 = function () {
+    return Math.floor(Math.random() * 0x10000).toString(16);
+  };
+  return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
+}
+
+app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, angularFire) {
   progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
+  var FirebaseSession = new Firebase('https://empty-orchestra.firebaseio.com/sessions/').child($scope.sessionID);
+  $scope.queue = [];
+  angularFire(FirebaseSession.child('queue'), $scope, "queue");
+  $scope.prompt = true;
+  $scope.room = {
+    name: "",
+    uid: uniqueToken()
+  };
+  
+
+  //FirebaseSession.child('queue').on('c', function (snapshot) {
+  //  $scope.queue = snapshot.val();
+  //});
   
       var config = {
         openSocket: function(config) {
           var channel = config.channel || $scope.sessionID || 'webrtc-oneway-broadcasting';
           console.log('Channel is ' + channel);
-          var socket = new Firebase('https://empty-orchestra.firebaseio.com/' + channel);
+          var socket = new Firebase('https://empty-orchestra.firebaseio.com/channels/' + channel);
           socket.channel = channel;
           socket.on('child_added', function(data) {
               config.onmessage(data.val());
@@ -120,28 +145,7 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar) 
         },
         onRemoteStream: function(htmlElement) {},
         onRoomFound: function(room) {
-            var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
-            if (alreadyExist) return;
-    
-            if (typeof roomsList === 'undefined') roomsList = document.body;
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td><strong>' + room.roomName + '</strong> is broadcasting his media!</td>' +
-                '<td><button class="join">Join</button></td>';
-            roomsList.insertBefore(tr, roomsList.firstChild);
-    
-            var joinRoomButton = tr.querySelector('.join');
-            joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
-            joinRoomButton.setAttribute('data-roomToken', room.broadcaster);
-            joinRoomButton.onclick = function() {
-                this.disabled = true;
-    
-                var broadcaster = this.getAttribute('data-broadcaster');
-                var roomToken = this.getAttribute('data-roomToken');
-                broadcastUI.joinRoom({
-                    roomToken: roomToken,
-                    joinUser: broadcaster
-                });
-            };
+            console.log(room);
         },
         onNewParticipant: function(numberOfViewers) {
             document.title = 'Viewers: ' + numberOfViewers;
@@ -167,13 +171,29 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar) 
         if (constraints) mediaConfig.constraints = constraints;
         getUserMedia(mediaConfig);
     }
-      
-    captureUserMedia(function() {
-      broadcastUI.createRoom({
-        roomName: (document.getElementById('broadcast-name') || {}).value || 'Anonymous',
-        isAudio: true
+    
+    $scope.askQuestion = function () {
+      console.log("Entering queue");
+      console.log($scope.room);
+      captureUserMedia(function() {
+        broadcastUI.createRoom({
+          roomName: $scope.room.name || 'Anonymous',
+          roomToken: $scope.room.uid,
+          isAudio: true
+        });
       });
-    });
+      //FirebaseSession.child('queue').push($scope.room, function(error) {
+      //  console.log("yayy!");
+      //});
+      $scope.queue.push($scope.room);
+      $scope.prompt = false;
+    };
+  
+  $scope.leave = function () {
+    var index = $scope.queue.indexOf($scope.room);
+    $scope.queue.splice(index, 1);
+    $scope.prompt = true;
+  }
 
     var broadcastUI = broadcast(config);
 });

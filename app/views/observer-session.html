@@ -2,12 +2,33 @@
   <div class="col-sm-8 col-sm-offset-2 col-xs-12">
     <h1>2 of 8 users in queue</h1>
   </div>
-    <section class="experiment">                
-      <section>
-        <input type="text" id="broadcast-name">
-        <button id="setup-new-broadcast" class="setup">Setup New Broadcast</button>
-      </section>
-    
+    <section class="experiment">
+      <form
+        class="form"
+        role="form"
+        ng-show="prompt"
+        ng-submit="askQuestion()">
+        <div class="form-group">
+          <input type="text"
+            class="form-control"
+            ng-model="room.name"
+            placeholder="Your Name"
+            required />
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">
+            Ask Question
+          </button>
+        </div>
+      </form>
+      <div class="form-group" ng-hide="prompt">
+        <button type="submit" class="btn btn-default" ng-click="leave()">
+          Leave
+        </button>
+      </div>
+      <ol>
+        <li ng-repeat="room in queue">{{room.name}}</li>
+      </ol>
       <!-- list of all available broadcasting rooms -->
       <table style="width: 100%;" id="rooms-list"></table>
     </section>

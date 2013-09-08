@@ -202,7 +202,11 @@ var broadcast = function (config) {
         createRoom: function (_config) {
             self.roomName = _config.roomName || 'Anonymous';
             self.isAudio = _config.isAudio;
-            self.roomToken = uniqueToken();
+            //self.roomToken = uniqueToken();
+            self.roomToken = _config.roomToken;
+            console.log('Got token from requestor');
+            console.log(_config.roomToken);
+            console.log(self.roomToken);
 
             isbroadcaster = true;
             isGetNewRoom = false;
