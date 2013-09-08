@@ -27,6 +27,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 300;
 }
 
+.main-view .form-group {
+  vertical-align: top; 
+}
+
 .role-bar {
   color: #fff;
   text-align: center;
@@ -39,7 +43,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .role-bar > h2 {
   font-size: 28px;
   font-weight: 300;
-  margin: 0.1em 0 0.5em 0;
+  margin: 0.5em 0 0.5em 0;
 }
 
 .btn-outline {
@@ -71,16 +75,38 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   text-decoration: none; 
 }
 
+.presenter-session .glyphicon-user,
+.observer-session .glyphicon {
+  font-size: 50px; 
+}
+
+.form-inline .form-control,
+.form .form-control {
+  margin-bottom: 0.6em;
+}
+
 .form-area {
   text-align: center; 
 }
 
-.observer-session {
+.observer-session,
+.presenter-session {
   text-align: center; 
 }
 
 .presenter-session button {
   margin-right: 0.8em; 
+}
+
+.ask-form {
+  margin-left: 12%;
+  margin-right: 12%;
+}
+
+.observer-session .room-list {
+  margin-top: 1em;
+  list-style-position: inside;
+  font-size: 18px;
 }
 
 *.unselectable {

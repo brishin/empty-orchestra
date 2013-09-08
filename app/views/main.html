@@ -1,10 +1,8 @@
 <div class="row main-view">
-  <div class="col-sm-5 col-sm-offset-2">
+  <div class="col-sm-8 col-sm-offset-2">
     <div class="promotion">
       <i>Opening the floor up to everyone has never been this easy.</i>
     </div>
-  </div>
-  <div class="col-sm-3">
     <div class="role-bar">
       <h2>Select one:</h2>
       <button
@@ -26,7 +24,7 @@
     </div>
     <div class="form-area">
       <form
-        class="form"
+        class="form-inline"
         role="form"
         ng-show="viewMode == 'presenter'"
         ng-submit="createSession()">
@@ -44,7 +42,7 @@
         </div>
       </form>
       <form
-        class="form"
+        class="form-inline"
         ng-show="viewMode == 'observer'"
         ng-submit="joinSession()">
         <div class="form-group">

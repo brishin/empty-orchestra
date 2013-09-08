@@ -1,10 +1,10 @@
 <div class="observer-session">
-  <div class="col-sm-8 col-sm-offset-2 col-xs-12">
-    <h1>2 of 8 users in queue</h1>
-  </div>
-    <section class="experiment">
+  <div class="col-sm-8 col-sm-offset-2">
+    <span class="glyphicon glyphicon-comment"></span>
+    <h1>{{queue.length || 0}} user(s) in queue</h1>
+     <section class="experiment">
       <form
-        class="form"
+        class="form ask-form"
         role="form"
         ng-show="prompt"
         ng-submit="askQuestion()">
@@ -12,12 +12,16 @@
           <input type="text"
             class="form-control"
             ng-model="room.name"
-            placeholder="Your Name"
+            placeholder="Name"
             required />
+          <input type="email"
+            class="form-control"
+            ng-model="room.email"
+            placeholder="Email (optional)" />
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-default">
-            Ask Question
+            Register to Ask Question
           </button>
         </div>
       </form>
@@ -26,10 +30,14 @@
           Leave
         </button>
       </div>
-      <ol>
-        <li ng-repeat="room in queue">{{room.name}}</li>
+      <ol class="room-list">
+        <li ng-repeat="room in queue">
+          {{room.name}}
+          <span ng-show="room.email">
+            - {{room.email}}
+          </span>
+        </li>
       </ol>
-      <!-- list of all available broadcasting rooms -->
-      <table style="width: 100%;" id="rooms-list"></table>
     </section>
+  </div>
 </div>

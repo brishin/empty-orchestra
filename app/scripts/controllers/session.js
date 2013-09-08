@@ -2,9 +2,13 @@
 
 var app = angular.module('emptyOrchestraApp');
 
-app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar, routeWatcher) {
+app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar, routeWatcher, angularFire) {
   progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
+  var FirebaseSession = new Firebase('https://empty-orchestra.firebaseio.com/sessions/').child($scope.sessionID);
+  $scope.rooms = [];
+  angularFire(FirebaseSession.child('queue'), $scope, "rooms");
+  
   routeWatcher.watch(function() {
     if (broadcastUI.getAudioPlayer())
       angular.element(broadcastUI.getAudioPlayer()).remove();
@@ -12,16 +16,20 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
   });
   
   $scope.listening = false;
-  $scope.rooms = [];
+  //$scope.rooms = [];
   var roomsPresent = {};
   
   $scope.startListening = function () {
     $scope.listening = true;
     var room = $scope.rooms[0];
     if (room) {
-      room.initAndStart(function(room) {
-        roomsPresent[room.broadcaster] = true;
+      console.log('Listening to');
+      console.log(room);
+      broadcastUI.joinRoom({
+        roomToken: room.uid,
+        joinUser: room.uid
       });
+      
       var audioPlayer = broadcastUI.getAudioPlayer();
       if (audioPlayer) audioPlayer.muted = false;   
     } 
@@ -58,7 +66,12 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
     },
     onRemoteStream: function(htmlElement) {},
     onRoomFound: function(room) {
-      if (room.broadcaster in roomsPresent) return;  
+      console.log(room);
+      broadcastUI.joinRoom({
+            roomToken: room.broadcaster,
+            joinUser: room.broadcaster
+          });        
+      /*if (room.broadcaster in roomsPresent) return;  
       $scope.rooms.push({
         'name': room.roomName,
         'initAndStart': function (callback) {
@@ -73,7 +86,7 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
         }
       });
       
-      $scope.$apply();
+      $scope.$apply();*/
     },
     onNewParticipant: function(numberOfViewers) {
         document.title = 'Viewers: ' + numberOfViewers;
