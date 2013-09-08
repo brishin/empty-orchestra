@@ -71,9 +71,8 @@
         </script>
         
         <!-- scripts used for broadcasting -->
-        <script src="https://www.webrtc-experiment.com/socket.io.js"></script>
         <script src="https://www.webrtc-experiment.com/RTCPeerConnection-v1.5.js"></script>
-        <script src="https://www.webrtc-experiment.com/webrtc-broadcasting/broadcast.js"></script>
+        <script src="broadcast.js"></script>
     </head>
 
     <body>
@@ -106,11 +105,6 @@
             <!-- just copy this <section> and next script -->
             <section class="experiment">                
                 <section>
-                    <select id="broadcasting-option">
-                            <option>Audio + Video</option>
-                            <option>Only Audio</option>
-                            <option>Screen</option>
-                    </select>
                     <input type="text" id="broadcast-name">
                     <button id="setup-new-broadcast" class="setup">Setup New Broadcast</button>
                 </section>
@@ -231,8 +225,6 @@
                 var setupNewBroadcast = document.getElementById('setup-new-broadcast');
                 var roomsList = document.getElementById('rooms-list');
 
-                var broadcastingOption = document.getElementById('broadcasting-option');
-
                 if (setupNewBroadcast) setupNewBroadcast.onclick = setupNewBroadcastButtonClickHandler;
 
                 function hideUnnecessaryStuff() {
@@ -252,83 +244,5 @@
 
             </script>
             
-            <section class="experiment">
-                <ol>
-                    <li>Mesh networking model is implemented to open multiple interconnected peer connections</li>
-                    <li>Maximum peer connections limit is <strong>256</strong> (on chrome)</li>
-                </ol>
-            </section>
-        
-            <section class="experiment own-widgets latest-commits">
-                <h2 class="header" id="updates" style="color: red; padding-bottom: .1em;"><a href="https://github.com/muaz-khan/WebRTC-Experiment/commits/master" target="_blank">Latest Updates</a></h2>
-                <div id="github-commits"></div>
-            </section>
-        
-            <section class="experiment">
-                <h2 class="header" id="feedback">Feedback</h2>
-                <div>
-                    <textarea id="message" style="border: 1px solid rgb(189, 189, 189); height: 8em; margin: .2em; outline: none; resize: vertical; width: 98%;" placeholder="Have any message? Suggestions or something went wrong?"></textarea>
-                </div>
-                <button id="send-message" style="font-size: 1em;">Send Message</button><small style="margin-left: 1em;">Enter your email too; if you want "direct" reply!</small>
-            </section>
-            
-            <section class="experiment">
-                <h2 class="header">How it works?</h2>
-                <p>
-                    It is one-way broadcasting; media stream is attached only by the broadcaster.
-                </p>
-                <p>
-                    It means that, if 10 people are watching your one-way broadcasted audio/video stream; on your system:
-                </p>
-                <ol>
-                    <li>10 RTP ports are opened to send video upward i.e. outgoing video</li>
-                    <li>10 RTP ports are opened to send audio upward i.e. outgoing audio</li>
-                </ol>
-                <p>
-                    And on participants system:
-                </p>
-                <ol>
-                    <li>10 RTP ports are opened to receive video i.e. incoming video</li>
-                    <li>10 RTP ports are opened to receive audio i.e. incoming audio</li>
-                </ol>
-                <p>
-                    Maximum bandwidth used by each video RTP port (media-track) is about 1MB. You're streaming audio and video tracks. You must be careful when streaming video over more than one peers. If you're broadcasting audio/video over 10 peers; it means that 20MB bandwidth is required on your system to stream-up (broadcast/transmit) your video. Otherwise; you'll face connection lost; CPU usage issues; and obviously audio-lost/noise/echo issues.
-                </p>
-                <p>
-                    You can handle such things using "b=AS" (application specific bandwidth) session description parameter values to deliver a little bit low quality video.
-                </p>
-                <pre>
-// removing existing bandwidth lines
-sdp = sdp.replace( /b=AS([^\r\n]+\r\n)/g , '');
-
-// setting "outgoing" audio RTP port's bandwidth to "50kbit/s"
-sdp = sdp.replace( /a=mid:audio\r\n/g , 'a=mid:audio\r\nb=AS:50\r\n');
-
-// setting "outgoing" video RTP port's bandwidth to "256kbit/s"
-sdp = sdp.replace( /a=mid:video\r\n/g , 'a=mid:video\r\nb=AS:256\r\n');
-</pre>
-                <p>
-                    Possible issues:</p>
-                <ol>
-                    <li>Blurry video experience</li>
-                    <li>Unclear voice and audio lost</li>
-                    <li>Bandwidth issues / slow streaming / CPU overwhelming</li>
-                </ol>
-                <p>Solution? Obviously a media server!</p>
-            </section>
-        </article>
-        <footer>
-            <p>
-                <a href="https://www.webrtc-experiment.com/">WebRTC Experiments</a>
-                ©
-                <a href="https://plus.google.com/100325991024054712503" rel="author" target="_blank">Muaz Khan</a>, <span>2013 </span>»
-                <a href="mailto:muazkh@gmail.com" target="_blank">Email</a>»
-                <a href="http://twitter.com/muazkh" target="_blank">@muazkh</a>»
-                <a href="https://github.com/muaz-khan" target="_blank">Github</a>
-            </p>
-        </footer>
-    
-        <!-- commits.js is useless for you! -->
-        <script src="https://www.webrtc-experiment.com/commits.js" async> </script>
     </body>
 </html>
