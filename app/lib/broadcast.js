@@ -56,6 +56,8 @@ var broadcast = function (config) {
             inner = {},
             peer;
 
+        self.htmlElement = htmlElement;
+
         var peerConfig = {
             attachStream: config.attachStream,
             onICE: function (candidate) {
@@ -222,6 +224,9 @@ var broadcast = function (config) {
                     userToken: self.userToken,
                     joinUser: _config.joinUser
                 });
+        },
+        getAudioPlayer: function () {
+            return self.htmlElement;
         }
     };
 };

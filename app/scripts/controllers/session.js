@@ -18,28 +18,18 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
     // broadcastUI.getAudioPlayer().muted = true;
   });
   
+  // Join room when the queue changes
   $scope.$watch('rooms', function(newValue, oldValue) {
-    console.log('Rooms Changed');
-    console.log(newValue);
-    console.log(oldValue);
-    if (oldValue[0]) {
-      if (newValue[0] && newValue[0].roomToken == oldValue[0].roomToken)
-        return;   // Person hasn't left
-      console.log('Person ' + oldValue[0].name + ' left!');
-      if (newValue[0]) {
-        console.log('We have something new!');
-        console.log(newValue);
-        broadcastUI.joinRoom({
-              roomToken: newValue[0].roomToken,
-              joinUser: newValue[0].broadcaster
-            });
-      }
+    var newRoom = $scope.rooms[0];
+    if (newRoom) {
+      broadcastUI.joinRoom({
+        roomToken: $scope.rooms[0].roomToken,
+        joinUser: $scope.rooms[0].broadcaster
+      });
     }
   });
   
   $scope.listening = false;
-  //$scope.rooms = [];
-  var roomsPresent = {};
   
   $scope.startListening = function () {
     $scope.listening = true;
@@ -48,23 +38,14 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
       console.log('Listening to');
       console.log(room);
     } 
-    var newRoom = $scope.rooms[0];
-    if (newRoom) {
-      console.log(newRoom);
-      console.log('THINGS ARE SUPPOSED TO BE LOOKING GOOD OVER HERE');
-      broadcastUI.joinRoom({
-        roomToken: $scope.rooms[0].roomToken,
-        joinUser: $scope.rooms[0].broadcaster
-      });
-    }
-    // var audioPlayer = broadcastUI.getAudioPlayer();
-    // if (audioPlayer) audioPlayer.muted = false;   
+    var audioPlayer = broadcastUI.getAudioPlayer();
+    if (audioPlayer) audioPlayer.muted = false;   
   };
   
   $scope.pauseListening = function () {
     $scope.listening = false;
-    // var audioPlayer = broadcastUI.getAudioPlayer();
-    // if (audioPlayer) audioPlayer.muted = true;    
+    var audioPlayer = broadcastUI.getAudioPlayer();
+    if (audioPlayer) audioPlayer.muted = true;    
   };
   
   $scope.nextRoom = function () {
