@@ -15,6 +15,17 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
     broadcastUI.getAudioPlayer().muted = true;
   });
   
+  $scope.$watch('rooms', function(newValue, oldValue) {
+    console.log('Rooms Changed');
+    console.log(newValue);
+    console.log(oldValue);
+    if (oldValue[0]) {
+      if (newValue[0] && newValue[0].roomToken == oldValue[0].roomToken)
+        return;   // Person hasn't left
+      console.log('Person ' + oldValue[0].name + ' left!');
+    }
+  });
+  
   $scope.listening = false;
   //$scope.rooms = [];
   var roomsPresent = {};
@@ -25,14 +36,9 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
     if (room) {
       console.log('Listening to');
       console.log(room);
-      broadcastUI.joinRoom({
-        roomToken: room.uid,
-        joinUser: room.uid
-      });
-      
-      var audioPlayer = broadcastUI.getAudioPlayer();
-      if (audioPlayer) audioPlayer.muted = false;   
     } 
+    var audioPlayer = broadcastUI.getAudioPlayer();
+    audioPlayer.muted = false;   
   };
   
   $scope.pauseListening = function () {
@@ -55,6 +61,7 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
         var socket = new Firebase('https://empty-orchestra.firebaseio.com/channels/' + channel);
         socket.channel = channel;
         socket.on('child_added', function(data) {
+            console.log('Child added to socket');
             conf.onmessage(data.val());
         });
         socket.send = function(data) {
@@ -70,15 +77,12 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
       var roomInQueue = $scope.rooms[0];
       console.log(roomInQueue);
       if (roomInQueue && roomInQueue.uid == room.roomToken) {
-        var player = broadcastUI.getAudioPlayer()
-        if (player) player.muted = false;
         broadcastUI.joinRoom({
               roomToken: room.broadcaster,
               joinUser: room.broadcaster
             });
       } else {
-        var player = broadcastUI.getAudioPlayer()
-        if (player) player.muted = true;
+        // TODO: How to disconnect user from broadcastUI
       }
     },
     onNewParticipant: function(numberOfViewers) {
@@ -197,7 +201,7 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, 
   
   $scope.leave = function () {
     var index = $scope.queue.indexOf($scope.room);
-    $scope.queue.splice(index, 1);
+    $scope.queue.shift();
     $scope.prompt = true;
   }
 

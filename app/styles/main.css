@@ -84,6 +84,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-size: 50px; 
 }
 
+.presenter-session h2 {
+  margin-top: 10px; 
+  margin-bottom: 28px;
+}
+
 .form-inline .form-control,
 .form .form-control {
   margin-bottom: 0.6em;
