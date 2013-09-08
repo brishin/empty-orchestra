@@ -1,4 +1,4 @@
-﻿/* MIT License: https://webrtc-experiment.appspot.com/licence/ */
+﻿// TODO: Implement stopBroadcasting() that stops the infinite startBroadcoasting() recursion
 
 var broadcast = function (config) {
     var self = {
@@ -55,8 +55,6 @@ var broadcast = function (config) {
             htmlElement = document.createElement(self.isAudio ? 'audio' : 'video'),
             inner = {},
             peer;
-      
-        self.htmlElement = htmlElement;
 
         var peerConfig = {
             attachStream: config.attachStream,
@@ -181,13 +179,15 @@ var broadcast = function (config) {
     }
 
     function startBroadcasting() {
-        defaultSocket && defaultSocket.send({
-                roomToken: self.roomToken,
-                roomName: self.roomName,
-                broadcaster: self.userToken,
-                isAudio: self.isAudio
-            });
+        var roomData = {
+            roomToken: self.roomToken,
+            roomName: self.roomName,
+            broadcaster: self.userToken,
+            isAudio: self.isAudio
+        };
+        defaultSocket && defaultSocket.send(roomData);
         setTimeout(startBroadcasting, 3000);
+        return roomData;
     }
 
     function uniqueToken() {
@@ -202,15 +202,11 @@ var broadcast = function (config) {
         createRoom: function (_config) {
             self.roomName = _config.roomName || 'Anonymous';
             self.isAudio = _config.isAudio;
-            //self.roomToken = uniqueToken();
-            self.roomToken = _config.roomToken;
-            console.log('Got token from requestor');
-            console.log(_config.roomToken);
-            console.log(self.roomToken);
+            self.roomToken = uniqueToken();
 
             isbroadcaster = true;
             isGetNewRoom = false;
-            startBroadcasting();
+            return startBroadcasting();
         },
         joinRoom: function (_config) {
             self.roomToken = _config.roomToken;
@@ -226,11 +222,6 @@ var broadcast = function (config) {
                     userToken: self.userToken,
                     joinUser: _config.joinUser
                 });
-         
-            console.log(self.htmlElement);
-        },
-        getAudioPlayer: function() {
-          return self.htmlElement;
         }
     };
 };

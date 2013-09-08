@@ -1,5 +1,8 @@
 'use strict';
 
+// TODO: When angularFire updates $scope.rooms get the front of the queue and call joinRoom on it
+// if something exists on the front of the queue.
+
 var app = angular.module('emptyOrchestraApp');
 
 app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar, routeWatcher, angularFire) {
@@ -10,9 +13,9 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
   angularFire(FirebaseSession.child('queue'), $scope, "rooms");
   
   routeWatcher.watch(function() {
-    if (broadcastUI.getAudioPlayer())
-      angular.element(broadcastUI.getAudioPlayer()).remove();
-    broadcastUI.getAudioPlayer().muted = true;
+    // if (broadcastUI.getAudioPlayer())
+    //   angular.element(broadcastUI.getAudioPlayer()).remove();
+    // broadcastUI.getAudioPlayer().muted = true;
   });
   
   $scope.$watch('rooms', function(newValue, oldValue) {
@@ -23,6 +26,14 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
       if (newValue[0] && newValue[0].roomToken == oldValue[0].roomToken)
         return;   // Person hasn't left
       console.log('Person ' + oldValue[0].name + ' left!');
+      if (newValue[0]) {
+        console.log('We have something new!');
+        console.log(newValue);
+        broadcastUI.joinRoom({
+              roomToken: newValue[0].roomToken,
+              joinUser: newValue[0].broadcaster
+            });
+      }
     }
   });
   
@@ -37,26 +48,36 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
       console.log('Listening to');
       console.log(room);
     } 
-    var audioPlayer = broadcastUI.getAudioPlayer();
-    audioPlayer.muted = false;   
+    var newRoom = $scope.rooms[0];
+    if (newRoom) {
+      console.log(newRoom);
+      console.log('THINGS ARE SUPPOSED TO BE LOOKING GOOD OVER HERE');
+      broadcastUI.joinRoom({
+        roomToken: $scope.rooms[0].roomToken,
+        joinUser: $scope.rooms[0].broadcaster
+      });
+    }
+    // var audioPlayer = broadcastUI.getAudioPlayer();
+    // if (audioPlayer) audioPlayer.muted = false;   
   };
   
   $scope.pauseListening = function () {
     $scope.listening = false;
-    var audioPlayer = broadcastUI.getAudioPlayer();
-    audioPlayer.muted = true;    
+    // var audioPlayer = broadcastUI.getAudioPlayer();
+    // if (audioPlayer) audioPlayer.muted = true;    
   };
   
   $scope.nextRoom = function () {
     $scope.pauseListening();
     var oldRoom = $scope.rooms.shift();
+
     $scope.startListening();
   };
   
   var config = {
     openSocket: function(conf) {
         var channel = conf.channel || $scope.sessionID || 'webrtc-oneway-broadcasting';
-        console.log(conf.channel);
+      console.log(conf.channel);
         console.log(channel);
         var socket = new Firebase('https://empty-orchestra.firebaseio.com/channels/' + channel);
         socket.channel = channel;
@@ -73,17 +94,18 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar,
     },
     onRemoteStream: function(htmlElement) {},
     onRoomFound: function(room) {
+      console.log("onRoomFound CALLED");
       console.log(room);
       var roomInQueue = $scope.rooms[0];
       console.log(roomInQueue);
-      if (roomInQueue && roomInQueue.uid == room.roomToken) {
+      // if (roomInQueue && roomInQueue.uid == room.roomToken) {
         broadcastUI.joinRoom({
-              roomToken: room.broadcaster,
+              roomToken: room.roomToken,
               joinUser: room.broadcaster
             });
-      } else {
+      // } else {
         // TODO: How to disconnect user from broadcastUI
-      }
+      // }
     },
     onNewParticipant: function(numberOfViewers) {
         document.title = 'Viewers: ' + numberOfViewers;
@@ -186,16 +208,19 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, 
       console.log("Entering queue");
       console.log($scope.room);
       captureUserMedia(function() {
-        broadcastUI.createRoom({
+        var roomData = broadcastUI.createRoom({
           roomName: $scope.room.name || 'Anonymous',
-          roomToken: $scope.room.uid,
           isAudio: true
         });
+        console.log('ROOOOOOOM DATA WORKED');
+        console.log(roomData);
+        $scope.queue.push(roomData);
+        $scope.$apply();
       });
       //FirebaseSession.child('queue').push($scope.room, function(error) {
       //  console.log("yayy!");
       //});
-      $scope.queue.push($scope.room);
+      // $scope.queue.push($scope.room);
       $scope.prompt = false;
     };
   
@@ -203,6 +228,7 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, 
     var index = $scope.queue.indexOf($scope.room);
     $scope.queue.shift();
     $scope.prompt = true;
+    broadcastUI.stopBroadcasting();
   }
 
     var broadcastUI = broadcast(config);
