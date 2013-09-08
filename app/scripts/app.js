@@ -29,10 +29,10 @@ angular.module('emptyOrchestraApp', ['firebase', 'ngProgress'])
       navigator.mozGetUserMedia ||
       navigator.msGetUserMedia
     );
-    routeWatcher.watch(function(event, current, previous){
-      if (!rtcSupported) {
-        console.log('Browser not supported.');
-        $location.path('/notSupported');
-      }
-    });
+    if (!rtcSupported) {
+      routeWatcher.watch(function(event, current, previous){
+          console.log('Browser not supported.');
+          $location.path('/notSupported');
+      });
+    }
   });
