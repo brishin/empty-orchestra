@@ -1,28 +1,48 @@
 body {
-    background-color: #0ac5f4;
+    color: #fff;
+    background-color: #225378;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.main-view .row {
+  margin-bottom: 1.2em; 
+}
+
+.top-bar {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 0.2em;
+  margin-bottom: 1em; 
+}
+
+.role-bar {
+  color: #fff;
+  text-align: center;
+}
+
+.role-bar > h2 {
+  margin-bottom: 0.5em; 
+}
+
+.btn-outline {
+  color: #fff;
+  background-color: transparent;
+  border-color: #fff;
+}
+
+.btn-outline:hover,
+.btn-outline:focus,
+.btn-outline:active {
+  color: #333;
+  text-shadow: none;
+  background-color: #fff;
+  border-color: #fff;
+  outline-width: 0;
 }
 
 .top-bar > h1 {
     color: #fff;
     font-family: "Lato", Arial, sans-serif;
+    font-size: 45px;
     font-weight: 100;
     text-transform: uppercase;
-}
-
-.hero-unit {
-    margin: 50px auto 0 auto;
-    width: 300px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 30px;
-    border-color: #ccc;
-    border-radius: 6px;
-    padding: 60px;
-}
-
-.hero-unit h1 {
-    font-size: 60px;
-    line-height: 1;
-    letter-spacing: -1px;
 }
