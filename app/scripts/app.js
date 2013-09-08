@@ -29,7 +29,6 @@ angular.module('emptyOrchestraApp', ['firebase', 'ngProgress'])
       navigator.mozGetUserMedia ||
       navigator.msGetUserMedia
     );
-    rtcSupported = false;
     routeWatcher.watch(function(event, current, previous){
       if (!rtcSupported) {
         console.log('Browser not supported.');
