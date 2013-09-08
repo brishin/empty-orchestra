@@ -1,14 +1,23 @@
 <div class="presenter-session">
-<section class="experiment">                
-<section>
-<input type="text" id="broadcast-name">
-<button id="setup-new-broadcast" class="setup">Setup New Broadcast</button>
-</section>
+  <div class="col-sm-8 col-sm-offset-2 col-xs-12">
+    <h1>8 users in queue</h1>
+    <button
+      type="button"
+      class="btn btn-outline btn-lg btn-role">
+      <span class="glyphicon glyphicon-remove"></span>
+      Skip Current User
+    </button>
+    <section class="experiment">                
+      <section>
+        <input type="text" id="broadcast-name">
+        <button id="setup-new-broadcast" class="setup">Setup New Broadcast</button>
+      </section>
+    
+      <!-- list of all available broadcasting rooms -->
+      <table style="width: 100%;" id="rooms-list"></table>
+    </section>
+  </div>
 
-<!-- list of all available broadcasting rooms -->
-<table style="width: 100%;" id="rooms-list"></table>
-
-</section>
 <script>
 // Muaz Khan     - https://github.com/muaz-khan
 // MIT License   - https://www.webrtc-experiment.com/licence/

@@ -39,11 +39,11 @@ angular.module('emptyOrchestraApp')
       var promise = $scope.incrementCurrent().then(function(current) {
         // Create session and open presenter view
         console.log("Got valid session id, now creating.");
+        startProgressBar();
         fireBaseSessions.child(current).set($scope.newSession, function(error) {
           console.log("Got response");
           if (error) alert("Failed to create session.");
-          else {
-            startProgressBar();
+          else {            
             $location.path('/presenter/' + current);
             $scope.$apply();
           }

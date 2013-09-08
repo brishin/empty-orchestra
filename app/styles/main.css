@@ -1,7 +1,11 @@
 body {
     color: #fff;
     background-color: #225378;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Lato", Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Lato", Arial, sans-serif;
 }
 
 .main-view .row {
@@ -12,6 +16,12 @@ body {
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 0.2em;
   margin-bottom: 1.8em; 
+}
+
+@media (max-width: 768px) {
+  .top-bar {
+    text-align: center;
+  }
 }
 
 .promotion {
@@ -47,12 +57,16 @@ body {
   outline-width: 0;
 }
 
-.top-bar > h1 {
+.top-bar h1 {
     color: #fff;
     font-family: "Lato", Arial, sans-serif;
     font-size: 45px;
     font-weight: 100;
     text-transform: uppercase;
+}
+
+.top-bar a {
+  text-decoration: none; 
 }
 
 .form-area {
