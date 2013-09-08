@@ -11,7 +11,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .top-bar {
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 0.2em;
-  margin-bottom: 1.8em; 
+  margin-bottom: 1.8em;
 }
 
 @media (max-width: 768px) {
@@ -32,7 +32,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .main-view .form-group {
-  vertical-align: top; 
+  vertical-align: top;
 }
 
 .role-bar {
@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .role-bar .btn {
-  margin-bottom: 0.8em; 
+  margin-bottom: 0.8em;
 }
 
 .role-bar > h2 {
@@ -76,16 +76,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .top-bar a {
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 .presenter-session .glyphicon-user,
 .observer-session .glyphicon {
-  font-size: 50px; 
+  font-size: 50px;
 }
 
 .presenter-session h2 {
-  margin-top: 10px; 
+  margin-top: 10px;
   margin-bottom: 28px;
 }
 
@@ -95,16 +95,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .form-area {
-  text-align: center; 
+  text-align: center;
 }
 
 .observer-session,
 .presenter-session {
-  text-align: center; 
+  text-align: center;
 }
 
 .presenter-session button {
-  margin-right: 0.8em; 
+  margin-right: 0.8em;
 }
 
 .ask-form {
@@ -118,8 +118,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-size: 18px;
 }
 
-.observer-session ol {
+.observer-session ol,
+.presenter-session ol {
   -webkit-padding-start: 0px;
+}
+
+.presenter-session .experiment {
+  margin-top: 0.8em;
 }
 
 *.unselectable {
