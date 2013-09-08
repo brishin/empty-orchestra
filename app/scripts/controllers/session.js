@@ -2,10 +2,12 @@
 
 var app = angular.module('emptyOrchestraApp');
 
-app.controller('PresenterCtrl', function ($scope, $q, $routeParams) {
+app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar) {
+  progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
 });
                
-app.controller('ObserverCtrl', function ($scope, $q, $routeParams) {
+app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar) {
+  progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
 });

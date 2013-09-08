@@ -1,3 +1,115 @@
 <div class="presenter-session">
-  <h1>Hello</h1>
+<section class="experiment">                
+<section>
+<input type="text" id="broadcast-name">
+<button id="setup-new-broadcast" class="setup">Setup New Broadcast</button>
+</section>
+
+<!-- list of all available broadcasting rooms -->
+<table style="width: 100%;" id="rooms-list"></table>
+
+</section>
+<script>
+// Muaz Khan     - https://github.com/muaz-khan
+// MIT License   - https://www.webrtc-experiment.com/licence/
+// Documentation - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/webrtc-broadcasting
+
+var config = {
+    openSocket: function(config) {
+        var channel = config.channel || location.hash.replace('#', '') || 'webrtc-oneway-broadcasting';
+        var socket = new Firebase('https://mycrofone.firebaseIO.com/' + channel);
+        socket.channel = channel;
+        socket.on('child_added', function(data) {
+            config.onmessage(data.val());
+        });
+        socket.send = function(data) {
+            this.push(data);
+        }
+        config.onopen && setTimeout(config.onopen, 1);
+        socket.onDisconnect().remove();
+        return socket;
+    },
+    onRemoteStream: function(htmlElement) {},
+    onRoomFound: function(room) {
+        var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
+        if (alreadyExist) return;
+
+        if (typeof roomsList === 'undefined') roomsList = document.body;
+
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td><strong>' + room.roomName + '</strong> is broadcasting his media!</td>' +
+            '<td><button class="join">Join</button></td>';
+        roomsList.insertBefore(tr, roomsList.firstChild);
+
+        var joinRoomButton = tr.querySelector('.join');
+        joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
+        joinRoomButton.setAttribute('data-roomToken', room.broadcaster);
+        joinRoomButton.onclick = function() {
+            this.disabled = true;
+
+            var broadcaster = this.getAttribute('data-broadcaster');
+            var roomToken = this.getAttribute('data-roomToken');
+            broadcastUI.joinRoom({
+                roomToken: roomToken,
+                joinUser: broadcaster
+            });
+            hideUnnecessaryStuff();
+        };
+    },
+    onNewParticipant: function(numberOfViewers) {
+        document.title = 'Viewers: ' + numberOfViewers;
+    }
+};
+
+
+function setupNewBroadcastButtonClickHandler() {
+    document.getElementById('broadcast-name').disabled = true;
+    document.getElementById('setup-new-broadcast').disabled = true;
+
+    captureUserMedia(function() {
+        broadcastUI.createRoom({
+            roomName: (document.getElementById('broadcast-name') || {}).value || 'Anonymous',
+            isAudio: true
+        });
+    });
+    hideUnnecessaryStuff();
+}
+
+function captureUserMedia(callback) {
+    var constraints = {
+        audio: true,
+        video: false
+    };
+
+    var mediaConfig = {
+        // video: htmlElement,
+        onsuccess: function(stream) {
+            config.attachStream = stream;
+            callback && callback();
+        },
+        onerror: function() {
+            alert('unable to get access to your microphone');
+        }
+    };
+    if (constraints) mediaConfig.constraints = constraints;
+    getUserMedia(mediaConfig);
+}
+
+var broadcastUI = broadcast(config);
+
+/* UI specific */
+var setupNewBroadcast = document.getElementById('setup-new-broadcast');
+var roomsList = document.getElementById('rooms-list');
+
+if (setupNewBroadcast) setupNewBroadcast.onclick = setupNewBroadcastButtonClickHandler;
+
+function hideUnnecessaryStuff() {
+    var visibleElements = document.getElementsByClassName('visible'),
+        length = visibleElements.length;
+    for (var i = 0; i < length; i++) {
+        visibleElements[i].style.display = 'none';
+    }
+}
+
+</script>
 </div>

@@ -31,7 +31,8 @@ body {
 
 .btn-outline:hover,
 .btn-outline:focus,
-.btn-outline:active {
+.btn-outline:active,
+.btn-outline.active {
   color: #333;
   text-shadow: none;
   background-color: #fff;
@@ -45,4 +46,8 @@ body {
     font-size: 45px;
     font-weight: 100;
     text-transform: uppercase;
+}
+
+.form-area {
+  text-align: center; 
 }

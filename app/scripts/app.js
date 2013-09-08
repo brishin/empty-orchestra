@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('emptyOrchestraApp', ['firebase'])
+angular.module('emptyOrchestraApp', ['firebase', 'ngProgress'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {

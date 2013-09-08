@@ -6,51 +6,55 @@
         <button
           type="button"
           class="btn btn-outline btn-lg btn-role"
-          ng-click="viewMode = 'presenter'">
+          ng-click="viewMode = 'presenter'"
+          ng-class="{'active': viewMode == 'presenter'}">
           <span class="glyphicon glyphicon-user"></span>
           Presenter
         </button>
         <button
           type="button"
           class="btn btn-outline btn-lg btn-role"
-          ng-click="viewMode = 'observer'">
+          ng-click="viewMode = 'observer'"
+          ng-class="{'active': viewMode == 'observer'}">
           <span class="glyphicon glyphicon-comment"></span>
           Observer
         </button>
       </div>
     </div>
   </div>
-  <form
-    class="form-inline"
-    role="form"
-    ng-show="viewMode == 'presenter'"
-    ng-submit="createSession()">
-    <div class="form-group">
-      <input type="text"
-        class="form-control"
-        ng-model="newSession.name"
-        placeholder="Session Name"
-        required />
-    </div>
-    <div class="form-group">
-      <button type="button" class="btn btn-default">
-        Create Session
-      </button>
-    </div>
-  </form>
-  <form
-    class="form-inline"
-    ng-show="viewMode == 'observer'"
-    ng-submit="joinSession()">
-    <div class="form-group">
-      <input type="text"
-        class="form-control"
-        ng-model="joinSessionId"
-        placeholder="Short Code"
-        required />
-    </div>
-    <div class="form-group">
-      <button type="button" class="btn btn-default">Join Session</button>
-    </div>
-  </form>
+  <div class="form-area">
+    <form
+      class="form-inline"
+      role="form"
+      ng-show="viewMode == 'presenter'"
+      ng-submit="createSession()">
+      <div class="form-group">
+        <input type="text"
+          class="form-control"
+          ng-model="newSession.name"
+          placeholder="Session Name"
+          required />
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-default">
+          Create Session
+        </button>
+      </div>
+    </form>
+    <form
+      class="form-inline"
+      ng-show="viewMode == 'observer'"
+      ng-submit="joinSession()">
+      <div class="form-group">
+        <input type="text"
+          class="form-control"
+          ng-model="joinSessionId"
+          placeholder="Short Code"
+          required />
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-default">Join Session</button>
+      </div>
+    </form>
+  </div>
 </div>

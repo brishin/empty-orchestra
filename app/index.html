@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
         <!-- build:css(.tmp) styles/main.css -->
@@ -30,7 +30,7 @@
     <div class="container">
       <div class="row">
         <div class="top-bar col-sm-8 col-sm-offset-2">
-          <h1>Town Hall</h1>
+          <h1>Townfloor</h1>
         </div>
       </div>
 
@@ -54,11 +54,14 @@
     <script src="https://cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js"></script>
 
 
+    <script src="lib/ng-progress.js"></script>
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/session.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/filters.js"></script>
+        <script src="lib/RTCPeerConnection-v1.5.js"></script>
+        <script src="lib/broadcast.js"></script>
         <!-- endbuild -->
 </body>
 </html>
