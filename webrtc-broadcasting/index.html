@@ -113,10 +113,6 @@
                         return socket;
                     },
                     onRemoteStream: function (htmlElement) {
-                        htmlElement.setAttribute('controls', true);
-                        videosContainer.insertBefore(htmlElement, videosContainer.firstChild);
-                        htmlElement.play();
-                        rotateInCircle(htmlElement);
                     },
                     onRoomFound: function (room) {
                         var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
@@ -155,12 +151,9 @@
                     document.getElementById('setup-new-broadcast').disabled=true;
                     
                     captureUserMedia(function () {
-                        var shared = 'video';
-                        if (window.option == 'Only Audio') shared = 'audio';
-                        if (window.option == 'Screen') shared = 'screen';
                         broadcastUI.createRoom({
                             roomName: (document.getElementById('broadcast-name') || {}).value || 'Anonymous',
-                            isAudio: shared === 'audio'
+                            isAudio: true
                         });
                     });
                     hideUnnecessaryStuff();
@@ -172,19 +165,11 @@
                             video: false
                         };
 
-                    var htmlElement = document.createElement('audio');
-                    htmlElement.setAttribute('autoplay', true);
-                    htmlElement.setAttribute('controls', true);
-                    videosContainer.insertBefore(htmlElement, videosContainer.firstChild);
-
                     var mediaConfig = {
-                        video: htmlElement,
+                        // video: htmlElement,
                         onsuccess: function (stream) {
                             config.attachStream = stream;
                             callback && callback();
-
-                            htmlElement.setAttribute('muted', true);
-                            rotateInCircle(htmlElement);
                         },
                         onerror: function () {
                             alert('unable to get access to your microphone');
@@ -197,7 +182,6 @@
                 var broadcastUI = broadcast(config);
 
                 /* UI specific */
-                var videosContainer = document.getElementById('videos-container') || document.body;
                 var setupNewBroadcast = document.getElementById('setup-new-broadcast');
                 var roomsList = document.getElementById('rooms-list');
 
@@ -211,12 +195,6 @@
                     }
                 }
 
-                function rotateInCircle(video) {
-                    video.style[navigator.mozGetUserMedia ? 'transform' : '-webkit-transform'] = 'rotate(0deg)';
-                    setTimeout(function () {
-                        video.style[navigator.mozGetUserMedia ? 'transform' : '-webkit-transform'] = 'rotate(360deg)';
-                    }, 1000);
-                }
 
             </script>
             
