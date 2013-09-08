@@ -7,6 +7,14 @@ angular.module('emptyOrchestraApp', ['firebase'])
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+      .when('/presenter/:sessionID', {
+        templateUrl: 'views/presenterSession.html',
+        controller: 'PresenterCtrl'
+      })
+      .when('/observer/:sessionID', {
+        templateUrl: 'views/observerSession.html',
+        controller: 'ObserverCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
