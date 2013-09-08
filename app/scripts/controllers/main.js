@@ -6,7 +6,7 @@ angular.module('emptyOrchestraApp')
     $scope.newSession = {
       "name": ""
     };
-    $scope.viewMode = "";
+    $scope.viewMode = 'observer';
     var fireBaseSessions = 
       new Firebase("https://empty-orchestra.firebaseio.com/sessions");
     
@@ -53,6 +53,12 @@ angular.module('emptyOrchestraApp')
       }, function(update) {
         console.log(update);
       });
+    };
+    
+    $scope.joinSession = function() {
+      startProgressBar();
+      console.log($scope.joinSessionID);
+      $location.path('/audience/' + $scope.joinSessionID);
     };
 
   });

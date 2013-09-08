@@ -2,16 +2,44 @@
 
 var app = angular.module('emptyOrchestraApp');
 
-app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar) {
+app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar, routeWatcher) {
   progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
+  routeWatcher.watch();
+  
+  $scope.listening = false;
+  $scope.rooms = [];
+  var roomsPresent = {};
+  
+  $scope.startListening = function () {
+    $scope.listening = true;
+    var room = $scope.rooms[0];
+    if (room) {
+      room.initAndStart(function(room) {
+        roomsPresent[room.broadcaster] = true;
+      });
+      var audioPlayer = broadcastUI.getAudioPlayer();
+      if (audioPlayer) audioPlayer.muted = false;   
+    } 
+  };
+  
+  $scope.pauseListening = function () {
+    $scope.listening = false;
+    var audioPlayer = broadcastUI.getAudioPlayer();
+    audioPlayer.muted = true;    
+  };
+  
+  $scope.nextRoom = function () {
+    var oldRoom = $scope.rooms.shift();
+    // delete $scope.presentRooms[oldRoom.broadcaster];
+  };
   
   var config = {
     openSocket: function(config) {
         var channel = config.channel || $scope.sessionID || 'webrtc-oneway-broadcasting';
         console.log(config.channel);
         console.log(channel);
-        var socket = new Firebase('https://mycrofone.firebaseIO.com/' + channel);
+        var socket = new Firebase('https://empty-orchestra.firebaseio.com/' + channel);
         socket.channel = channel;
         socket.on('child_added', function(data) {
             config.onmessage(data.val());
@@ -25,30 +53,22 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar)
     },
     onRemoteStream: function(htmlElement) {},
     onRoomFound: function(room) {
-        var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
-        if (alreadyExist) return;
-
-        if (typeof roomsList === 'undefined') roomsList = document.body;
-
-        var tr = document.createElement('tr');
-        tr.innerHTML = '<td><strong>' + room.roomName + '</strong> is broadcasting his media!</td>' +
-            '<td><button class="join">Join</button></td>';
-        roomsList.insertBefore(tr, roomsList.firstChild);
-
-        var joinRoomButton = tr.querySelector('.join');
-        joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
-        joinRoomButton.setAttribute('data-roomToken', room.broadcaster);
-        joinRoomButton.onclick = function() {
-            this.disabled = true;
-
-            var broadcaster = this.getAttribute('data-broadcaster');
-            var roomToken = this.getAttribute('data-roomToken');
-            broadcastUI.joinRoom({
-                roomToken: roomToken,
-                joinUser: broadcaster
-            });
-            hideUnnecessaryStuff();
-        };
+      if (room.broadcaster in roomsPresent) return;  
+      $scope.rooms.push({
+        'name': room.roomName,
+        'initAndStart': function (callback) {
+          if (room.broadcaster in roomsPresent) return;
+          console.log(roomsPresent);
+          console.log(room.broadcaster);
+          broadcastUI.joinRoom({
+            roomToken: room.broadcaster,
+            joinUser: room.broadcaster
+          });
+          if (callback) callback(room);
+        }
+      });
+      
+      $scope.$apply();
     },
     onNewParticipant: function(numberOfViewers) {
         document.title = 'Viewers: ' + numberOfViewers;
@@ -76,21 +96,9 @@ app.controller('PresenterCtrl', function ($scope, $q, $routeParams, progressbar)
   }
   
   var broadcastUI = broadcast(config);
-  
-  /* UI specific */
-  var setupNewBroadcast = document.getElementById('setup-new-broadcast');
-  var roomsList = document.getElementById('rooms-list');
-  
-  function hideUnnecessaryStuff() {
-      var visibleElements = document.getElementsByClassName('visible'),
-          length = visibleElements.length;
-      for (var i = 0; i < length; i++) {
-          visibleElements[i].style.display = 'none';
-      }
-  }
 });
 
-app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, observerSessionFactory) {
+app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar) {
   progressbar.complete();
   $scope.sessionID = $routeParams.sessionID;
   
@@ -98,7 +106,7 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, 
         openSocket: function(config) {
           var channel = config.channel || $scope.sessionID || 'webrtc-oneway-broadcasting';
           console.log('Channel is ' + channel);
-          var socket = new Firebase('https://mycrofone.firebaseIO.com/' + channel);
+          var socket = new Firebase('https://empty-orchestra.firebaseio.com/' + channel);
           socket.channel = channel;
           socket.on('child_added', function(data) {
               config.onmessage(data.val());
@@ -116,7 +124,6 @@ app.controller('ObserverCtrl', function ($scope, $q, $routeParams, progressbar, 
             if (alreadyExist) return;
     
             if (typeof roomsList === 'undefined') roomsList = document.body;
-    
             var tr = document.createElement('tr');
             tr.innerHTML = '<td><strong>' + room.roomName + '</strong> is broadcasting his media!</td>' +
                 '<td><button class="join">Join</button></td>';

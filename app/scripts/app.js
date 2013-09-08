@@ -11,7 +11,7 @@ angular.module('emptyOrchestraApp', ['firebase', 'ngProgress'])
         templateUrl: 'views/presenter-session.html',
         controller: 'PresenterCtrl'
       })
-      .when('/observer/:sessionID', {
+      .when('/audience/:sessionID', {
         templateUrl: 'views/observer-session.html',
         controller: 'ObserverCtrl'
       })

@@ -8,10 +8,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: "Lato", Arial, sans-serif;
 }
 
-.main-view .row {
-  margin-bottom: 1.2em; 
-}
-
 .top-bar {
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 0.2em;
@@ -36,8 +32,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   text-align: center;
 }
 
+.role-bar .btn {
+  margin-bottom: 0.8em; 
+}
+
 .role-bar > h2 {
-  margin-bottom: 0.5em; 
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 0.5em;
 }
 
 .btn-outline {
@@ -75,6 +77,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .observer-session {
   text-align: center; 
+}
+
+.presenter-session button {
+  margin-right: 0.8em; 
 }
 
 *.unselectable {

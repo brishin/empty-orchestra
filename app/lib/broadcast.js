@@ -55,6 +55,8 @@ var broadcast = function (config) {
             htmlElement = document.createElement(self.isAudio ? 'audio' : 'video'),
             inner = {},
             peer;
+      
+        self.htmlElement = htmlElement;
 
         var peerConfig = {
             attachStream: config.attachStream,
@@ -220,6 +222,11 @@ var broadcast = function (config) {
                     userToken: self.userToken,
                     joinUser: _config.joinUser
                 });
+         
+            console.log(self.htmlElement);
+        },
+        getAudioPlayer: function() {
+          return self.htmlElement;
         }
     };
 };
